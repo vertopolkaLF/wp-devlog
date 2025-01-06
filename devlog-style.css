@@ -1,0 +1,105 @@
+div#devlog_dashboard_widget div.inside,
+#TB_ajaxContent {
+    box-sizing: border-box;
+}
+
+#TB_ajaxContent img {
+    max-width: 100%;
+}
+
+div#devlog_dashboard_widget div.inside {
+    padding: 0;
+    margin: 0;
+}
+
+.devlog-post {
+    display: flex;
+    flex-direction: column;
+    color: #333;
+    text-decoration: none;
+    padding: 12px 12px;
+    transition: .2s;
+}
+
+.devlog-post:nth-child(even) {
+    background: #f6f7f7;
+}
+
+.devlog-post.new {
+    background: #fff9d5;
+}
+
+.devlog-post:hover {
+    color: inherit !important;
+    background: #dcebf7;
+    transition: .2s;
+}
+
+.devlog-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.devlog-post-header h2 {
+    padding: 0 !important;
+    line-height: 1 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+.devlog-post-date {
+    color: #2271b1;
+    font-weight: 600;
+}
+
+.devlog-post img {
+    margin-top: 10px;
+}
+
+.devlog-post p {
+    margin: 8px 0;
+}
+
+.devlog-post ol,
+.devlog-post ul,
+.devlog-full-post ol,
+.devlog-full-post ul {
+    margin: 0 20px;
+}
+
+.devlog-post *:last-child {
+    margin-bottom: 0 !important;
+}
+
+.devlog-post ul,
+.devlog-full-post ul {
+    list-style: revert;
+}
+
+.devlog-post ul li ul,
+.devlog-full-post ul li ul {
+    margin-top: 5px;
+}
+
+.devlog-post-content {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    /* number of lines to show */
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.devlog-post.large .devlog-post-content,
+.devlog-full-post.devlog-post-content {
+    overflow: unset;
+    display: block;
+    -webkit-line-clamp: 0;
+    /* number of lines to show */
+    line-clamp: 0;
+}
+
+.devlog-post-content>*:first-child {
+    margin-top: 10px !important;
+}
