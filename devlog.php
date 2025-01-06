@@ -1,14 +1,14 @@
 <?php
 /*
- * Plugin Name:	WP DevLog
- * Version:		1.3
- * Description:	Плагин для коммуникации между разработчиком и редакторами
- * Plugin URI:	https://t.me/vertopolkalf
- * Author:		vertopolkaLF
- * Author URI:	https://t.me/vertopolkalf
- * License:		GPL-2.0+
- * License URI:	https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:	wp-devlog
+ * Plugin Name:		WP DevLog
+ * Version:			1.3
+ * Description:		Плагин для коммуникации между разработчиком и редакторами
+ * Plugin URI:		https://t.me/vertopolkalf
+ * Author:			vertopolkaLF
+ * Author URI:		https://t.me/vertopolkalf
+ * License:			GPL-2.0+
+ * License URI:		https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:		wp-devlog
  */
 
 add_action( 'init', function () {
