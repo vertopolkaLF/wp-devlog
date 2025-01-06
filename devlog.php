@@ -124,8 +124,6 @@ function devlog_dashboard_widget_callback() {
 			$large = '';
 		}
 
-
-
 		echo "<a href='/?TB_inline&width=772&height=850&inlineId={$post->ID}' title='{$post->post_title} - {$postdate}' class='devlog-post thickbox{$large}{$new}'>
 		<div class='devlog-post-header'>
 			<h2>{$post->post_title}</h2>
