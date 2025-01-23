@@ -21,6 +21,12 @@ div#devlog_dashboard_widget div.inside {
     transition: .2s;
 }
 
+.devlog-post-content img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
 .devlog-post:nth-child(even) {
     background: #f6f7f7;
 }
