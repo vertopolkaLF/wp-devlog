@@ -1,0 +1,12 @@
+For WordPress.org plugin repository, you need to add screenshots here:
+
+1. Create PNG files named screenshot-1.png, screenshot-2.png, etc.
+2. Size recommendation: 1544px × 774px
+3. These screenshots will be used in the WordPress.org plugin listing
+
+Example:
+- screenshot-1.png - Dashboard widget showing DevLog entries
+- screenshot-2.png - DevLog entry creation screen
+- screenshot-3.png - Settings page
+
+Note: You can also add banner-772x250.png and icon-256x256.png in the assets folder for plugin branding. 
