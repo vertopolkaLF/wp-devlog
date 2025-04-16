@@ -11,7 +11,60 @@
  * Text Domain:		wp-devlog
  */
 
-define( 'DEVLOG_POSTS_PER_PAGE', 5 );
+define( 'DEVLOG_POSTS_PER_PAGE', get_option( 'devlog_posts_per_page', 5 ) );
+
+// Добавляем страницу настроек
+function devlog_add_settings_page() {
+	add_submenu_page(
+		'edit.php?post_type=devlog', // родительское меню
+		'Настройки Dev Log',         // заголовок страницы
+		'Настройки',                 // текст пункта меню
+		'manage_options',            // необходимые права доступа
+		'devlog-settings',           // слаг страницы
+		'devlog_settings_page_callback' // функция вывода страницы
+	);
+}
+add_action( 'admin_menu', 'devlog_add_settings_page' );
+
+// Функция вывода страницы настроек
+function devlog_settings_page_callback() {
+	// Сохраняем настройки
+	if ( isset( $_POST['devlog_save_settings'] ) && check_admin_referer( 'devlog_settings_nonce' ) ) {
+		$posts_per_page = intval( $_POST['devlog_posts_per_page'] );
+		if ( $posts_per_page < 1 )
+			$posts_per_page = 1;
+		update_option( 'devlog_posts_per_page', $posts_per_page );
+		echo '<div class="notice notice-success is-dismissible"><p>Настройки сохранены.</p></div>';
+	}
+
+	$posts_per_page = get_option( 'devlog_posts_per_page', 5 );
+	?>
+	<div class="wrap">
+		<h1>Настройки Dev Log</h1>
+		<form method="post" action="">
+			<?php wp_nonce_field( 'devlog_settings_nonce' ); ?>
+			<table class="form-table">
+				<tr>
+					<th scope="row">Количество записей на странице</th>
+					<td>
+						<input type="number" name="devlog_posts_per_page" value="<?php echo esc_attr( $posts_per_page ); ?>" min="1" class="regular-text">
+						<p class="description">Количество записей Dev Log, отображаемых в виджете на панели управления</p>
+					</td>
+				</tr>
+			</table>
+			<p class="submit">
+				<input type="submit" name="devlog_save_settings" class="button-primary" value="Сохранить настройки">
+			</p>
+		</form>
+	</div>
+	<?php
+}
+
+// Регистрируем настройки при активации плагина
+function devlog_plugin_activation() {
+	add_option( 'devlog_posts_per_page', 5 );
+}
+register_activation_hook( __FILE__, 'devlog_plugin_activation' );
 
 add_action( 'init', function () {
 	register_post_type( 'devlog', array(

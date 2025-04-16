@@ -140,3 +140,36 @@ div#devlog_dashboard_widget div.inside {
     color: #666;
     font-style: italic;
 }
+
+/* Стили для страницы настроек Dev Log */
+.devlog-settings-page {
+    background: #fff;
+    padding: 20px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.devlog-settings-page h2 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.devlog-settings-form .form-table th {
+    font-weight: 600;
+}
+
+.devlog-settings-form input[type="number"] {
+    width: 80px;
+}
+
+.devlog-settings-form .button-primary {
+    background: #2271b1;
+    border-color: #2271b1;
+}
+
+.devlog-settings-form .button-primary:hover {
+    background: #135e96;
+    border-color: #135e96;
+}
