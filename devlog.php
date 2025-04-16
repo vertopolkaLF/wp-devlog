@@ -103,7 +103,16 @@ function devlog_dashboard_widget_callback() {
 		$post_date = new DateTime( $post->post_date );
 		$postdate = $post_date->format( 'd.m.Y' );
 		$full_postcontent = apply_filters( 'the_content', $post->post_content );
-		$postcontent = preg_replace( "/<a.*?>(.*)?<\/a>/im", "$1", $full_postcontent );
+
+		// Проверяем есть ли тег MORE и получаем контент до него
+		if ( strpos( $post->post_content, '<!--more-->' ) !== false ) {
+			$parts = explode( '<!--more-->', $post->post_content );
+			$content_before_more = $parts[0];
+			$postcontent = preg_replace( "/<a.*?>(.*)?<\/a>/im", "$1", apply_filters( 'the_content', $content_before_more ) );
+		} else {
+			$postcontent = preg_replace( "/<a.*?>(.*)?<\/a>/im", "$1", $full_postcontent );
+		}
+
 		$post_thumbnail = get_the_post_thumbnail_url( $post, 'large' );
 		$post_thumbnail_full = get_the_post_thumbnail_url( $post );
 
