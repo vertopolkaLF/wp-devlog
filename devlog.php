@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name:		WP DevLog
- * Version:			1.3.2
+ * Version:			1.4
  * Description:		Плагин для коммуникации между разработчиком и редакторами
  * Plugin URI:		https://t.me/vertopolkalf
  * Author:			vertopolkaLF
@@ -68,19 +68,8 @@ add_action( 'init', function () {
 } );
 
 
-// Функция для преобразования картинок в тексте в ссылки на полноразмерные изображения
-function devlog_process_content( $content ) {
-	// Регулярное выражение для поиска тегов img
-	$pattern = '/<img([^>]+)src=[\'"]([^\'"]+)[\'"]([^>]*)>/i';
 
-	// Замена найденных изображений на изображения, обёрнутые в ссылки
-	$replacement = '<a href="$2" target="_blank" style="display:inline-block;"><img$1src="$2"$3></a>';
 
-	// Применяем замену
-	$content = preg_replace( $pattern, $replacement, $content );
-
-	return $content;
-}
 
 // Функция для добавления виджета в консоль
 function devlog_add_dashboard_widget() {
@@ -115,27 +104,32 @@ function devlog_dashboard_widget_callback() {
 		$postdate = $post_date->format( 'd.m.Y' );
 		$full_postcontent = apply_filters( 'the_content', $post->post_content );
 
+		// Преобразуем изображения в полном тексте поста в ссылки на полноразмерные файлы
+		$full_postcontent = preg_replace_callback( '/<img(.*?)src=["\'](.*?)["\'](.*?)>/i', function ($matches) {
+			$img_url = $matches[2];
+			// Пытаемся получить ID изображения по URL
+			$attachment_id = attachment_url_to_postid( $img_url );
+			if ( $attachment_id ) {
+				// Если нашли ID, получаем URL полноразмерного изображения
+				$full_img_url = wp_get_attachment_image_url( $attachment_id, 'full' );
+				if ( $full_img_url ) {
+					$img_url = $full_img_url;
+				}
+			}
+			return '<a href="' . $img_url . '" target="_blank"><img' . $matches[1] . 'src="' . $matches[2] . '"' . $matches[3] . '></a>';
+		}, $full_postcontent );
+
 		// Проверяем есть ли тег MORE и получаем контент до него
 		if ( strpos( $post->post_content, '<!--more-->' ) !== false ) {
 			$parts = explode( '<!--more-->', $post->post_content );
 			$content_before_more = $parts[0];
-			$postcontent = apply_filters( 'the_content', $content_before_more );
-			// Удаляем ссылки, но сохраняем их содержимое
-			$postcontent = preg_replace( "/<a.*?>(.*)?<\/a>/im", "$1", $postcontent );
-			// Теперь обрабатываем картинки
-			$postcontent = devlog_process_content( $postcontent );
+			$postcontent = preg_replace( "/<a.*?>(.*)?<\/a>/im", "$1", apply_filters( 'the_content', $content_before_more ) );
 		} else {
-			// Удаляем ссылки, но сохраняем их содержимое
 			$postcontent = preg_replace( "/<a.*?>(.*)?<\/a>/im", "$1", $full_postcontent );
-			// Теперь обрабатываем картинки 
-			$postcontent = devlog_process_content( $postcontent );
 		}
 
-		// Обрабатываем полный контент для модальных окон
-		$full_postcontent = devlog_process_content( $full_postcontent );
-
 		$post_thumbnail = get_the_post_thumbnail_url( $post, 'large' );
-		$post_thumbnail_full = get_the_post_thumbnail_url( $post );
+		$post_thumbnail_full = get_the_post_thumbnail_url( $post, 'full' );
 
 
 		$interval = $current_date->diff( $post_date );
@@ -168,7 +162,7 @@ function devlog_dashboard_widget_callback() {
 
 		$full_posts .= "<div class='devlog-full-post' id='{$post->ID}' style='display:none;'>";
 		if ( $post_thumbnail != '' ) {
-			$full_posts .= "<a style='display:contents;' href='{$post_thumbnail_full}' target='_blank'><img src='{$post_thumbnail_full}'></a>";
+			$full_posts .= "<a href='{$post_thumbnail_full}' target='_blank'><img src='{$post_thumbnail_full}'></a>";
 		}
 		$full_posts .= "<div class='devlog-full-post devlog-post-content'>{$full_postcontent}</div>
 		</div>";
