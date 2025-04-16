@@ -1,0 +1,175 @@
+# Copyright (C) 2024 vertopolkaLF
+# This file is distributed under the GPL-2.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP DevLog 1.6.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-devlog\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-07-01T10:00:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.0\n"
+"X-Domain: wp-devlog\n"
+
+#. Plugin Name of the plugin
+msgid "WP DevLog"
+msgstr ""
+
+#. Description of the plugin
+msgid "Plugin for communication between developers and editors"
+msgstr ""
+
+#: devlog.php:28
+msgid "Dev Log Settings"
+msgstr ""
+
+#: devlog.php:29
+msgid "Settings"
+msgstr ""
+
+#: devlog.php:41
+msgid "Settings saved."
+msgstr ""
+
+#: devlog.php:49
+msgid "Display Settings"
+msgstr ""
+
+#: devlog.php:54
+msgid "Number of entries per page"
+msgstr ""
+
+#: devlog.php:57
+msgid "Number of Dev Log entries displayed in the dashboard widget"
+msgstr ""
+
+#: devlog.php:62
+msgid "Save Settings"
+msgstr ""
+
+#: devlog.php:79
+msgid "All Dev Logs"
+msgstr ""
+
+#: devlog.php:80
+msgid "Edit Dev Log"
+msgstr ""
+
+#: devlog.php:81
+msgid "View Dev Log"
+msgstr ""
+
+#: devlog.php:82
+msgid "View Dev Logs"
+msgstr ""
+
+#: devlog.php:83
+msgid "Add New Dev Log"
+msgstr ""
+
+#: devlog.php:84
+msgid "New Dev Log"
+msgstr ""
+
+#: devlog.php:85
+msgid "Parent Dev Log:"
+msgstr ""
+
+#: devlog.php:86
+msgid "Search Dev Logs"
+msgstr ""
+
+#: devlog.php:87
+msgid "No dev logs found"
+msgstr ""
+
+#: devlog.php:88
+msgid "No dev logs found in trash"
+msgstr ""
+
+#: devlog.php:89
+msgid "Dev Log Archives"
+msgstr ""
+
+#: devlog.php:90
+msgid "Dev Log Attributes"
+msgstr ""
+
+#: devlog.php:91
+msgid "Insert into dev log"
+msgstr ""
+
+#: devlog.php:92
+msgid "Uploaded to this dev log"
+msgstr ""
+
+#: devlog.php:93
+msgid "Filter dev logs list"
+msgstr ""
+
+#: devlog.php:94
+msgid "Filter dev logs by date"
+msgstr ""
+
+#: devlog.php:95
+msgid "Dev Logs list navigation"
+msgstr ""
+
+#: devlog.php:96
+msgid "Dev Logs list"
+msgstr ""
+
+#: devlog.php:97
+msgid "Dev Log published."
+msgstr ""
+
+#: devlog.php:98
+msgid "Dev Log published privately."
+msgstr ""
+
+#: devlog.php:99
+msgid "Dev Log reverted to draft."
+msgstr ""
+
+#: devlog.php:100
+msgid "Dev Log scheduled."
+msgstr ""
+
+#: devlog.php:101
+msgid "Dev Log updated."
+msgstr ""
+
+#: devlog.php:102
+msgid "Dev Log Link"
+msgstr ""
+
+#: devlog.php:103
+msgid "Link to dev log."
+msgstr ""
+
+#: devlog.php:131
+msgid "Website Changes"
+msgstr ""
+
+#: devlog.php:145
+msgid "Error: WP_Query class not found. WordPress may not be working correctly."
+msgstr ""
+
+#: devlog.php:210
+msgid "Load More"
+msgstr ""
+
+#: devlog.php:211
+msgid "Loading..."
+msgstr ""
+
+#: devlog.php:264
+msgid "Security error. Refresh the page and try again."
+msgstr ""
+
+#: devlog.php:277
+msgid "Error: WP_Query class not found. WordPress may not be working correctly."
+msgstr "" 

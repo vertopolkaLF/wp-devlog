@@ -1,24 +1,31 @@
 <?php
 /*
  * Plugin Name:		WP DevLog
- * Version:			1.6.0
- * Description:		Плагин для коммуникации между разработчиком и редакторами
+ * Version:			1.7.0
+ * Description:		Plugin for communication between developers and editors
  * Plugin URI:		https://t.me/vertopolkalf
  * Author:			vertopolkaLF
  * Author URI:		https://t.me/vertopolkalf
  * License:			GPL-2.0+
  * License URI:		https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:		wp-devlog
+ * Domain Path:     /languages
  */
 
 define( 'DEVLOG_POSTS_PER_PAGE', get_option( 'devlog_posts_per_page', 5 ) );
+
+// Load plugin textdomain
+function devlog_load_textdomain() {
+	load_plugin_textdomain( 'wp-devlog', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'devlog_load_textdomain' );
 
 // Добавляем страницу настроек
 function devlog_add_settings_page() {
 	add_submenu_page(
 		'edit.php?post_type=devlog', // родительское меню
-		'Настройки Dev Log',         // заголовок страницы
-		'Настройки',                 // текст пункта меню
+		__( 'Dev Log Settings', 'wp-devlog' ),         // заголовок страницы
+		__( 'Settings', 'wp-devlog' ),                 // текст пункта меню
 		'manage_options',            // необходимые права доступа
 		'devlog-settings',           // слаг страницы
 		'devlog_settings_page_callback' // функция вывода страницы
@@ -34,28 +41,28 @@ function devlog_settings_page_callback() {
 		if ( $posts_per_page < 1 )
 			$posts_per_page = 1;
 		update_option( 'devlog_posts_per_page', $posts_per_page );
-		echo '<div class="notice notice-success is-dismissible"><p>Настройки сохранены.</p></div>';
+		echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Settings saved.', 'wp-devlog' ) . '</p></div>';
 	}
 
 	$posts_per_page = get_option( 'devlog_posts_per_page', 5 );
 	?>
 	<div class="wrap">
-		<h1>Настройки Dev Log</h1>
+		<h1><?php _e( 'Dev Log Settings', 'wp-devlog' ); ?></h1>
 		<div class="devlog-settings-page">
-			<h2>Параметры отображения</h2>
+			<h2><?php _e( 'Display Settings', 'wp-devlog' ); ?></h2>
 			<form method="post" action="" class="devlog-settings-form">
 				<?php wp_nonce_field( 'devlog_settings_nonce' ); ?>
 				<table class="form-table">
 					<tr>
-						<th scope="row">Количество записей на странице</th>
+						<th scope="row"><?php _e( 'Number of entries per page', 'wp-devlog' ); ?></th>
 						<td>
 							<input type="number" name="devlog_posts_per_page" value="<?php echo esc_attr( $posts_per_page ); ?>" min="1" class="regular-text">
-							<p class="description">Количество записей Dev Log, отображаемых в виджете на панели управления</p>
+							<p class="description"><?php _e( 'Number of Dev Log entries displayed in the dashboard widget', 'wp-devlog' ); ?></p>
 						</td>
 					</tr>
 				</table>
 				<p class="submit">
-					<input type="submit" name="devlog_save_settings" class="button-primary" value="Сохранить настройки">
+					<input type="submit" name="devlog_save_settings" class="button-primary" value="<?php _e( 'Save Settings', 'wp-devlog' ); ?>">
 				</p>
 			</form>
 		</div>
@@ -75,31 +82,31 @@ add_action( 'init', function () {
 			'name' => 'Dev Log',
 			'singular_name' => 'Dev Log',
 			'menu_name' => 'Dev Log',
-			'all_items' => 'Все Dev Log',
-			'edit_item' => 'Изменить Dev Log',
-			'view_item' => 'Посмотреть Dev Log',
-			'view_items' => 'Посмотреть Dev Log',
-			'add_new_item' => 'Добавить новый Dev Log',
-			'new_item' => 'Новый Dev Log',
-			'parent_item_colon' => 'Родитель Dev Log:',
-			'search_items' => 'Поиск Dev Log',
-			'not_found' => 'Не найдено dev log',
-			'not_found_in_trash' => 'В корзине не найдено dev log',
-			'archives' => 'Архивы Dev Log',
-			'attributes' => 'Атрибуты Dev Log',
-			'insert_into_item' => 'Вставить в dev log',
-			'uploaded_to_this_item' => 'Загружено в это dev log',
-			'filter_items_list' => 'Фильтровать список dev log',
-			'filter_by_date' => 'Фильтр dev log по дате',
-			'items_list_navigation' => 'Dev Log навигация по списку',
-			'items_list' => 'Dev Log список',
-			'item_published' => 'Dev Log опубликовано.',
-			'item_published_privately' => 'Dev Log опубликована приватно.',
-			'item_reverted_to_draft' => 'Dev Log преобразован в черновик.',
-			'item_scheduled' => 'Dev Log запланировано.',
-			'item_updated' => 'Dev Log обновлён.',
-			'item_link' => 'Cсылка на Dev Log',
-			'item_link_description' => 'Ссылка на dev log.',
+			'all_items' => __( 'All Dev Logs', 'wp-devlog' ),
+			'edit_item' => __( 'Edit Dev Log', 'wp-devlog' ),
+			'view_item' => __( 'View Dev Log', 'wp-devlog' ),
+			'view_items' => __( 'View Dev Logs', 'wp-devlog' ),
+			'add_new_item' => __( 'Add New Dev Log', 'wp-devlog' ),
+			'new_item' => __( 'New Dev Log', 'wp-devlog' ),
+			'parent_item_colon' => __( 'Parent Dev Log:', 'wp-devlog' ),
+			'search_items' => __( 'Search Dev Logs', 'wp-devlog' ),
+			'not_found' => __( 'No dev logs found', 'wp-devlog' ),
+			'not_found_in_trash' => __( 'No dev logs found in trash', 'wp-devlog' ),
+			'archives' => __( 'Dev Log Archives', 'wp-devlog' ),
+			'attributes' => __( 'Dev Log Attributes', 'wp-devlog' ),
+			'insert_into_item' => __( 'Insert into dev log', 'wp-devlog' ),
+			'uploaded_to_this_item' => __( 'Uploaded to this dev log', 'wp-devlog' ),
+			'filter_items_list' => __( 'Filter dev logs list', 'wp-devlog' ),
+			'filter_by_date' => __( 'Filter dev logs by date', 'wp-devlog' ),
+			'items_list_navigation' => __( 'Dev Logs list navigation', 'wp-devlog' ),
+			'items_list' => __( 'Dev Logs list', 'wp-devlog' ),
+			'item_published' => __( 'Dev Log published.', 'wp-devlog' ),
+			'item_published_privately' => __( 'Dev Log published privately.', 'wp-devlog' ),
+			'item_reverted_to_draft' => __( 'Dev Log reverted to draft.', 'wp-devlog' ),
+			'item_scheduled' => __( 'Dev Log scheduled.', 'wp-devlog' ),
+			'item_updated' => __( 'Dev Log updated.', 'wp-devlog' ),
+			'item_link' => __( 'Dev Log Link', 'wp-devlog' ),
+			'item_link_description' => __( 'Link to dev log.', 'wp-devlog' ),
 		),
 		'public' => true,
 		'exclude_from_search' => true,
@@ -124,20 +131,15 @@ add_action( 'init', function () {
 	) );
 } );
 
-
-
-
-
 // Функция для добавления виджета в консоль
 function devlog_add_dashboard_widget() {
 	wp_add_dashboard_widget(
 		'devlog_dashboard_widget', // ID виджета
-		'Изменения на сайте', // Заголовок виджета
+		__( 'Website Changes', 'wp-devlog' ), // Заголовок виджета
 		'devlog_dashboard_widget_callback' // Callback функция для отображения контента
 	);
 }
 add_action( 'wp_dashboard_setup', 'devlog_add_dashboard_widget' );
-
 
 // Функция для отображения контента виджета
 function devlog_dashboard_widget_callback() {
@@ -148,7 +150,7 @@ function devlog_dashboard_widget_callback() {
 	];
 
 	if ( ! class_exists( 'WP_Query' ) ) {
-		echo '<p>Ошибка: Класс WP_Query не найден. Возможно, WordPress работает некорректно.</p>';
+		echo '<p>' . __( 'Error: WP_Query class not found. WordPress may not be working correctly.', 'wp-devlog' ) . '</p>';
 		return;
 	}
 
@@ -228,14 +230,12 @@ function devlog_dashboard_widget_callback() {
 
 	echo '<div id="devlog-more-posts-container"></div>';
 	echo '<div id="devlog-load-more-wrap">';
-	echo '<button id="devlog-load-more" class="button" data-offset="' . DEVLOG_POSTS_PER_PAGE . '">Загрузить еще</button>';
-	echo '<span id="devlog-loading" style="display:none;">Загрузка...</span>';
+	echo '<button id="devlog-load-more" class="button" data-offset="' . DEVLOG_POSTS_PER_PAGE . '">' . __( 'Load More', 'wp-devlog' ) . '</button>';
+	echo '<span id="devlog-loading" style="display:none;">' . __( 'Loading...', 'wp-devlog' ) . '</span>';
 	echo '</div>';
 
 	echo $full_posts;
 }
-
-
 
 function my_enqueue( $hook ) {
 	// Для виджета на дашборде
@@ -264,7 +264,7 @@ add_action( 'admin_enqueue_scripts', 'my_enqueue' );
 // Функция для обработки AJAX запросов
 function devlog_load_more_posts() {
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'devlog-ajax-nonce' ) ) {
-		wp_send_json_error( 'Ошибка безопасности. Обновите страницу и попробуйте снова.' );
+		wp_send_json_error( __( 'Security error. Refresh the page and try again.', 'wp-devlog' ) );
 		wp_die();
 	}
 
@@ -277,7 +277,7 @@ function devlog_load_more_posts() {
 	];
 
 	if ( ! class_exists( 'WP_Query' ) ) {
-		wp_send_json_error( 'Ошибка: Класс WP_Query не найден. Возможно, WordPress работает некорректно.' );
+		wp_send_json_error( __( 'Error: WP_Query class not found. WordPress may not be working correctly.', 'wp-devlog' ) );
 		wp_die();
 	}
 
