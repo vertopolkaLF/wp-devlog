@@ -1,4 +1,20 @@
 jQuery(document).ready(function ($) {
+    // Обработчик для динамически добавленных элементов
+    $(document).on('click', '#devlog-more-posts-container a.thickbox', function (e) {
+        // Предотвращаем стандартное поведение ссылки
+        e.preventDefault();
+
+        // Получаем ID модального окна из атрибута href
+        var modalId = $(this).attr('href').split('inlineId=')[1].split('&')[0];
+
+        // Вызываем thickbox
+        tb_show($(this).attr('title'), $(this).attr('href'));
+
+        console.log('Clicked on dynamically added thickbox link:', modalId);
+
+        return false;
+    });
+
     // Кнопка "Загрузить еще"
     $('#devlog-load-more').on('click', function () {
         var button = $(this);
@@ -19,6 +35,9 @@ jQuery(document).ready(function ($) {
                 nonce: devlog_ajax.nonce
             },
             success: function (response) {
+                // Отладочная информация
+                console.log('AJAX response:', response);
+
                 // Добавляем новые посты в контейнер
                 $('#devlog-more-posts-container').append(response.posts);
 
@@ -26,7 +45,9 @@ jQuery(document).ready(function ($) {
                 $('body').append(response.full_posts);
 
                 // Обновляем offset для следующего запроса
-                button.data('offset', offset + 5);
+                var newOffset = offset + response.debug.post_count;
+                button.data('offset', newOffset);
+                console.log('New offset:', newOffset);
 
                 // Если больше нет постов, скрываем кнопку
                 if (!response.has_more) {
@@ -39,7 +60,13 @@ jQuery(document).ready(function ($) {
                 }
 
                 // Обновляем thickbox для новых элементов
-                tb_init('a.thickbox');
+                setTimeout(function () {
+                    tb_init('a.thickbox');
+                    // Для уверенности повторно инициализируем после небольшой задержки
+                    setTimeout(function () {
+                        tb_init('a.thickbox');
+                    }, 500);
+                }, 100);
             },
             error: function () {
                 // В случае ошибки

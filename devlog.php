@@ -119,7 +119,7 @@ function devlog_dashboard_widget_callback() {
 			return '<a href="' . $full_img_url . '" target="_blank"><img' . $matches[1] . 'src="' . $full_img_url . '"' . $matches[3] . '></a>';
 		}, $post->post_content );
 
-		// Теперь применяем фильтры к обработанному контенту
+		// Применяем фильтры к обработанному контенту
 		$full_postcontent = apply_filters( 'the_content', $processed_content );
 		$full_postcontent = wpautop( $full_postcontent );
 
@@ -178,7 +178,7 @@ function devlog_dashboard_widget_callback() {
 	// Добавляем кнопку "Загрузить еще" и контейнер для новых постов
 	echo '<div id="devlog-more-posts-container"></div>';
 	echo '<div id="devlog-load-more-wrap">';
-	echo '<button id="devlog-load-more" class="button" data-offset="10">Загрузить еще</button>';
+	echo '<button id="devlog-load-more" class="button" data-offset="3">Загрузить еще</button>';
 	echo '<span id="devlog-loading" style="display:none;">Загрузка...</span>';
 	echo '</div>';
 
@@ -190,6 +190,11 @@ function devlog_dashboard_widget_callback() {
 function my_enqueue( $hook ) {
 	if ( 'index.php' != $hook )
 		return;
+
+	// Убедимся, что Thickbox подключен
+	wp_enqueue_script( 'thickbox' );
+	wp_enqueue_style( 'thickbox' );
+
 	wp_enqueue_style( 'devlog', plugins_url( '/devlog-style.css', __FILE__ ) );
 	wp_enqueue_script( 'devlog-script', plugins_url( '/devlog-script.js', __FILE__ ), array( 'jquery', 'thickbox' ), '1.0', true );
 
@@ -213,9 +218,15 @@ function devlog_load_more_posts() {
 
 	$args = [ 
 		'post_type' => 'devlog',
-		'posts_per_page' => 5,
+		'posts_per_page' => 3,
 		'offset' => $offset
 	];
+
+	// Проверка на существование класса WP_Query
+	if ( ! class_exists( 'WP_Query' ) ) {
+		wp_send_json_error( 'Ошибка: Класс WP_Query не найден. Возможно, WordPress работает некорректно.' );
+		wp_die();
+	}
 
 	$query = new WP_Query( $args );
 	$posts = $query->posts;
@@ -228,7 +239,7 @@ function devlog_load_more_posts() {
 		$post_date = new DateTime( $post->post_date );
 		$postdate = $post_date->format( 'd.m.Y' );
 
-		// Обработка контента и замена картинок на полноразмерные
+		// Сначала обрабатываем контент и заменяем все картинки на полноразмерные
 		$processed_content = preg_replace_callback( '/<img(.*?)src=["\'](.*?)["\'](.*?)>/i', function ($matches) {
 			$img_url = $matches[2];
 			$full_img_url = preg_replace( '~-(?:\d+x\d+|scaled|rotated)~', '', $img_url );
@@ -276,7 +287,13 @@ function devlog_load_more_posts() {
 	$response = array(
 		'posts' => $output,
 		'full_posts' => $full_posts,
-		'has_more' => count( $posts ) == 5 // Проверяем, есть ли еще посты
+		'has_more' => ( $offset + count( $posts ) < $query->found_posts ), // Есть ли ещё посты для загрузки
+		'debug' => array(
+			'post_count' => count( $posts ),
+			'offset' => $offset,
+			'query_vars' => $query->query_vars,
+			'found_posts' => $query->found_posts
+		)
 	);
 
 	wp_send_json( $response );
