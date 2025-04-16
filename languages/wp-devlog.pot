@@ -18,20 +18,12 @@ msgstr ""
 msgid "WP DevLog"
 msgstr ""
 
-#. Plugin URI of the plugin
-msgid "https://t.me/vertopolkalf"
-msgstr ""
-
 #. Description of the plugin
 msgid "Plugin for communication between developers and editors"
 msgstr ""
 
 #. Author of the plugin
 msgid "vertopolkaLF"
-msgstr ""
-
-#. Author URI of the plugin
-msgid "https://t.me/vertopolkalf"
 msgstr ""
 
 #: devlog.php:28
@@ -181,10 +173,6 @@ msgstr ""
 #: devlog.php:264
 msgid "Security error. Refresh the page and try again."
 msgstr ""
-
-#: devlog.php:277
-# msgid "Error: WP_Query class not found. WordPress may not be working correctly."
-# msgstr ""
 
 #: devlog.php:255
 msgid "No more entries"

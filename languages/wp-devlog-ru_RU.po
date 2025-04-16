@@ -20,10 +20,6 @@ msgstr ""
 msgid "WP DevLog"
 msgstr "WP DevLog"
 
-#. Plugin URI of the plugin
-msgid "https://t.me/vertopolkalf"
-msgstr "https://t.me/vertopolkalf"
-
 #. Description of the plugin
 msgid "Plugin for communication between developers and editors"
 msgstr "Плагин для коммуникации между разработчиком и редакторами"
@@ -31,10 +27,6 @@ msgstr "Плагин для коммуникации между разработ
 #. Author of the plugin
 msgid "vertopolkaLF"
 msgstr "vertopolkaLF"
-
-#. Author URI of the plugin
-msgid "https://t.me/vertopolkalf"
-msgstr "https://t.me/vertopolkalf"
 
 #: devlog.php:28
 msgid "Dev Log Settings"
@@ -183,10 +175,6 @@ msgstr "Загрузка..."
 #: devlog.php:264
 msgid "Security error. Refresh the page and try again."
 msgstr "Ошибка безопасности. Обновите страницу и попробуйте снова."
-
-#: devlog.php:277
-msgid "Error: WP_Query class not found. WordPress may not be working correctly."
-msgstr "Ошибка: Класс WP_Query не найден. Возможно, WordPress работает некорректно."
 
 #: devlog.php:255
 msgid "No more entries"

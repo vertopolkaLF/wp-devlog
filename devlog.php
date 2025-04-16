@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name:		WP DevLog
- * Version:			1.7.1
+ * Version:			1.7.2
  * Description:		Plugin for communication between developers and editors
  * Plugin URI:		https://t.me/vertopolkalf
  * Author:			vertopolkaLF
