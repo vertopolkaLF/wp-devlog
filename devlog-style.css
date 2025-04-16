@@ -1,6 +1,7 @@
 div#devlog_dashboard_widget div.inside,
 #TB_ajaxContent {
     box-sizing: border-box;
+    background-color: #fff;
 }
 
 #TB_ajaxContent img {

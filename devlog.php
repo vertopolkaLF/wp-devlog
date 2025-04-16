@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name:		WP DevLog
- * Version:			1.4
+ * Version:			1.5
  * Description:		Плагин для коммуникации между разработчиком и редакторами
  * Plugin URI:		https://t.me/vertopolkalf
  * Author:			vertopolkaLF
@@ -56,8 +56,7 @@ add_action( 'init', function () {
 			1 => 'comments',
 			2 => 'editor',
 			3 => 'excerpt',
-			4 => 'custom-fields',
-			5 => 'thumbnail'
+			4 => 'custom-fields'
 		),
 		'rewrite' => array(
 			'with_front' => false,
@@ -86,8 +85,15 @@ add_action( 'wp_dashboard_setup', 'devlog_add_dashboard_widget' );
 function devlog_dashboard_widget_callback() {
 
 	$args = [ 
-		'post_type' => "devlog"
+		'post_type' => "devlog",
+		'posts_per_page' => 10,
 	];
+
+	// Проверка на существование класса WP_Query
+	if ( ! class_exists( 'WP_Query' ) ) {
+		echo '<p>Ошибка: Класс WP_Query не найден. Возможно, WordPress работает некорректно.</p>';
+		return;
+	}
 
 	$query = new WP_Query( $args );
 
@@ -102,35 +108,28 @@ function devlog_dashboard_widget_callback() {
 
 		$post_date = new DateTime( $post->post_date );
 		$postdate = $post_date->format( 'd.m.Y' );
-		$full_postcontent = apply_filters( 'the_content', $post->post_content );
 
-		// Преобразуем изображения в полном тексте поста в ссылки на полноразмерные файлы
-		$full_postcontent = preg_replace_callback( '/<img(.*?)src=["\'](.*?)["\'](.*?)>/i', function ($matches) {
+		// Сначала обрабатываем контент и заменяем все картинки на полноразмерные
+		$processed_content = preg_replace_callback( '/<img(.*?)src=["\'](.*?)["\'](.*?)>/i', function ($matches) {
 			$img_url = $matches[2];
-			// Пытаемся получить ID изображения по URL
-			$attachment_id = attachment_url_to_postid( $img_url );
-			if ( $attachment_id ) {
-				// Если нашли ID, получаем URL полноразмерного изображения
-				$full_img_url = wp_get_attachment_image_url( $attachment_id, 'full' );
-				if ( $full_img_url ) {
-					$img_url = $full_img_url;
-				}
-			}
-			return '<a href="' . $img_url . '" target="_blank"><img' . $matches[1] . 'src="' . $matches[2] . '"' . $matches[3] . '></a>';
-		}, $full_postcontent );
+			$full_img_url = preg_replace( '~-(?:\d+x\d+|scaled|rotated)~', '', $img_url );
+			return '<a href="' . $full_img_url . '" target="_blank"><img' . $matches[1] . 'src="' . $full_img_url . '"' . $matches[3] . '></a>';
+		}, $post->post_content );
+
+		// Теперь применяем фильтры к обработанному контенту
+		$full_postcontent = apply_filters( 'the_content', $processed_content );
+		$full_postcontent = wpautop( $full_postcontent );
 
 		// Проверяем есть ли тег MORE и получаем контент до него
-		if ( strpos( $post->post_content, '<!--more-->' ) !== false ) {
-			$parts = explode( '<!--more-->', $post->post_content );
+		if ( strpos( $processed_content, '<!--more-->' ) !== false ) {
+			$parts = explode( '<!--more-->', $processed_content );
 			$content_before_more = $parts[0];
-			$postcontent = preg_replace( "/<a.*?>(.*)?<\/a>/im", "$1", apply_filters( 'the_content', $content_before_more ) );
+			$postcontent = wp_strip_all_tags( $content_before_more, true );
+			$postcontent = apply_filters( 'the_content', $postcontent );
 		} else {
-			$postcontent = preg_replace( "/<a.*?>(.*)?<\/a>/im", "$1", $full_postcontent );
+			$postcontent = wp_strip_all_tags( $full_postcontent, true );
+			$postcontent = apply_filters( 'the_content', $postcontent );
 		}
-
-		$post_thumbnail = get_the_post_thumbnail_url( $post, 'large' );
-		$post_thumbnail_full = get_the_post_thumbnail_url( $post, 'full' );
-
 
 		$interval = $current_date->diff( $post_date );
 		$days_difference = $interval->format( '%a' );
@@ -148,22 +147,25 @@ function devlog_dashboard_widget_callback() {
 			$large = '';
 		}
 
-		echo "<a href='/?TB_inline&width=772&height=850&inlineId={$post->ID}' title='{$post->post_title} - {$postdate}' class='devlog-post thickbox{$large}{$new}'>
-		<div class='devlog-post-header'>
-			<h2>{$post->post_title}</h2>
-			<span class='devlog-post-date'>{$postdate}</h2>
-		</div>";
-		if ( $post_thumbnail != '' && $large == ' large' ) {
-			echo "<img src='{$post_thumbnail}'>";
-		}
+		// Выводим весь пост как одну кликабельную ссылку
+		printf(
+			'<a href="/?TB_inline&width=772&height=850&inlineId=%1$s" title="%2$s - %3$s" class="devlog-post thickbox%4$s%5$s">
+				<div class="devlog-post-header">
+					<h2>%2$s</h2>
+					<span class="devlog-post-date">%3$s</span>
+				</div>
+				<div class="devlog-post-content">%6$s</div>
+			</a>',
+			$post->ID,
+			esc_html( $post->post_title ),
+			esc_html( $postdate ),
+			esc_attr( $large ),
+			esc_attr( $new ),
+			$postcontent
+		);
 
-		echo "<div class='devlog-post-content'>{$postcontent}</div>
-		</a>";
-
+		// Полный контент поста для модального окна - без изменений
 		$full_posts .= "<div class='devlog-full-post' id='{$post->ID}' style='display:none;'>";
-		if ( $post_thumbnail != '' ) {
-			$full_posts .= "<a href='{$post_thumbnail_full}' target='_blank'><img src='{$post_thumbnail_full}'></a>";
-		}
 		$full_posts .= "<div class='devlog-full-post devlog-post-content'>{$full_postcontent}</div>
 		</div>";
 	}
