@@ -47,7 +47,7 @@ jQuery(document).ready(function ($) {
                 // Если больше нет постов, скрываем кнопку
                 if (!response.has_more) {
                     button.remove();
-                    loading.text('Больше записей нет').show();
+                    loading.text(devlog_i18n.no_more_entries).show();
                 } else {
                     // Иначе показываем кнопку снова
                     button.show();
@@ -65,7 +65,7 @@ jQuery(document).ready(function ($) {
             },
             error: function () {
                 // В случае ошибки
-                loading.text('Ошибка загрузки. Попробуйте еще раз.');
+                loading.text(devlog_i18n.load_error);
                 button.show();
             }
         });

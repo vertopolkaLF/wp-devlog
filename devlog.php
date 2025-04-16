@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name:		WP DevLog
- * Version:			1.7.0
+ * Version:			1.7.1
  * Description:		Plugin for communication between developers and editors
  * Plugin URI:		https://t.me/vertopolkalf
  * Author:			vertopolkaLF
@@ -251,6 +251,12 @@ function my_enqueue( $hook ) {
 		wp_localize_script( 'devlog-script', 'devlog_ajax', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'nonce' => wp_create_nonce( 'devlog-ajax-nonce' )
+		) );
+
+		// Локализация строк для JavaScript
+		wp_localize_script( 'devlog-script', 'devlog_i18n', array(
+			'no_more_entries' => __( 'No more entries', 'wp-devlog' ),
+			'load_error' => __( 'Error loading. Please try again.', 'wp-devlog' )
 		) );
 	}
 

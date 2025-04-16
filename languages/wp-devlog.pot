@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP DevLog 1.6.0\n"
+"Project-Id-Version: WP DevLog 1.7.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-devlog\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,8 +18,20 @@ msgstr ""
 msgid "WP DevLog"
 msgstr ""
 
+#. Plugin URI of the plugin
+msgid "https://t.me/vertopolkalf"
+msgstr ""
+
 #. Description of the plugin
 msgid "Plugin for communication between developers and editors"
+msgstr ""
+
+#. Author of the plugin
+msgid "vertopolkaLF"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://t.me/vertopolkalf"
 msgstr ""
 
 #: devlog.php:28
@@ -171,5 +183,13 @@ msgid "Security error. Refresh the page and try again."
 msgstr ""
 
 #: devlog.php:277
-msgid "Error: WP_Query class not found. WordPress may not be working correctly."
+# msgid "Error: WP_Query class not found. WordPress may not be working correctly."
+# msgstr ""
+
+#: devlog.php:255
+msgid "No more entries"
+msgstr ""
+
+#: devlog.php:256
+msgid "Error loading. Please try again."
 msgstr "" 

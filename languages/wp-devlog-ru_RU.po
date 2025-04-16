@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP DevLog 1.6.0\n"
+"Project-Id-Version: WP DevLog 1.7.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-devlog\n"
 "Last-Translator: vertopolkaLF <admin@example.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -20,9 +20,21 @@ msgstr ""
 msgid "WP DevLog"
 msgstr "WP DevLog"
 
+#. Plugin URI of the plugin
+msgid "https://t.me/vertopolkalf"
+msgstr "https://t.me/vertopolkalf"
+
 #. Description of the plugin
 msgid "Plugin for communication between developers and editors"
 msgstr "Плагин для коммуникации между разработчиком и редакторами"
+
+#. Author of the plugin
+msgid "vertopolkaLF"
+msgstr "vertopolkaLF"
+
+#. Author URI of the plugin
+msgid "https://t.me/vertopolkalf"
+msgstr "https://t.me/vertopolkalf"
 
 #: devlog.php:28
 msgid "Dev Log Settings"
@@ -173,5 +185,13 @@ msgid "Security error. Refresh the page and try again."
 msgstr "Ошибка безопасности. Обновите страницу и попробуйте снова."
 
 #: devlog.php:277
-# msgid "Error: WP_Query class not found. WordPress may not be working correctly."
-# msgstr "Ошибка: Класс WP_Query не найден. Возможно, WordPress работает некорректно." 
+msgid "Error: WP_Query class not found. WordPress may not be working correctly."
+msgstr "Ошибка: Класс WP_Query не найден. Возможно, WordPress работает некорректно."
+
+#: devlog.php:255
+msgid "No more entries"
+msgstr "Больше записей нет"
+
+#: devlog.php:256
+msgid "Error loading. Please try again."
+msgstr "Ошибка загрузки. Попробуйте еще раз." 
