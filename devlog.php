@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name:		WP DevLog
- * Version:			1.5
+ * Version:			1.5.1
  * Description:		Плагин для коммуникации между разработчиком и редакторами
  * Plugin URI:		https://t.me/vertopolkalf
  * Author:			vertopolkaLF
@@ -10,6 +10,8 @@
  * License URI:		https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:		wp-devlog
  */
+
+define( 'DEVLOG_POSTS_PER_PAGE', 5 );
 
 add_action( 'init', function () {
 	register_post_type( 'devlog', array(
@@ -86,10 +88,9 @@ function devlog_dashboard_widget_callback() {
 
 	$args = [ 
 		'post_type' => "devlog",
-		'posts_per_page' => 3,
+		'posts_per_page' => DEVLOG_POSTS_PER_PAGE,
 	];
 
-	// Проверка на существование класса WP_Query
 	if ( ! class_exists( 'WP_Query' ) ) {
 		echo '<p>Ошибка: Класс WP_Query не найден. Возможно, WordPress работает некорректно.</p>';
 		return;
@@ -104,7 +105,6 @@ function devlog_dashboard_widget_callback() {
 
 	$full_posts = '';
 
-	// Обертка для всех постов
 	echo '<div id="devlog-posts-container">';
 
 	foreach ( $posts as $post ) {
@@ -112,18 +112,15 @@ function devlog_dashboard_widget_callback() {
 		$post_date = new DateTime( $post->post_date );
 		$postdate = $post_date->format( 'd.m.Y' );
 
-		// Сначала обрабатываем контент и заменяем все картинки на полноразмерные
 		$processed_content = preg_replace_callback( '/<img(.*?)src=["\'](.*?)["\'](.*?)>/i', function ($matches) {
 			$img_url = $matches[2];
 			$full_img_url = preg_replace( '~-(?:\d+x\d+|scaled|rotated)~', '', $img_url );
 			return '<a href="' . $full_img_url . '" target="_blank"><img' . $matches[1] . 'src="' . $full_img_url . '"' . $matches[3] . '></a>';
 		}, $post->post_content );
 
-		// Применяем фильтры к обработанному контенту
 		$full_postcontent = apply_filters( 'the_content', $processed_content );
 		$full_postcontent = wpautop( $full_postcontent );
 
-		// Проверяем есть ли тег MORE и получаем контент до него
 		if ( strpos( $processed_content, '<!--more-->' ) !== false ) {
 			$parts = explode( '<!--more-->', $processed_content );
 			$content_before_more = $parts[0];
@@ -150,7 +147,6 @@ function devlog_dashboard_widget_callback() {
 			$large = '';
 		}
 
-		// Выводим весь пост как одну кликабельную ссылку
 		printf(
 			'<a href="/?TB_inline&width=772&height=850&inlineId=%1$s" title="%2$s - %3$s" class="devlog-post thickbox%4$s%5$s">
 				<div class="devlog-post-header">
@@ -167,18 +163,16 @@ function devlog_dashboard_widget_callback() {
 			$postcontent
 		);
 
-		// Полный контент поста для модального окна - без изменений
 		$full_posts .= "<div class='devlog-full-post' id='{$post->ID}' style='display:none;'>";
 		$full_posts .= "<div class='devlog-full-post devlog-post-content'>{$full_postcontent}</div>
 		</div>";
 	}
 
-	echo '</div>'; // Закрываем #devlog-posts-container
+	echo '</div>';
 
-	// Добавляем кнопку "Загрузить еще" и контейнер для новых постов
 	echo '<div id="devlog-more-posts-container"></div>';
 	echo '<div id="devlog-load-more-wrap">';
-	echo '<button id="devlog-load-more" class="button" data-offset="3">Загрузить еще</button>';
+	echo '<button id="devlog-load-more" class="button" data-offset="' . DEVLOG_POSTS_PER_PAGE . '">Загрузить еще</button>';
 	echo '<span id="devlog-loading" style="display:none;">Загрузка...</span>';
 	echo '</div>';
 
@@ -208,7 +202,6 @@ add_action( 'admin_enqueue_scripts', 'my_enqueue' );
 
 // Функция для обработки AJAX запросов
 function devlog_load_more_posts() {
-	// Проверка безопасности
 	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'devlog-ajax-nonce' ) ) {
 		wp_send_json_error( 'Ошибка безопасности. Обновите страницу и попробуйте снова.' );
 		wp_die();
@@ -218,11 +211,10 @@ function devlog_load_more_posts() {
 
 	$args = [ 
 		'post_type' => 'devlog',
-		'posts_per_page' => 3,
+		'posts_per_page' => DEVLOG_POSTS_PER_PAGE,
 		'offset' => $offset
 	];
 
-	// Проверка на существование класса WP_Query
 	if ( ! class_exists( 'WP_Query' ) ) {
 		wp_send_json_error( 'Ошибка: Класс WP_Query не найден. Возможно, WordPress работает некорректно.' );
 		wp_die();
@@ -239,18 +231,15 @@ function devlog_load_more_posts() {
 		$post_date = new DateTime( $post->post_date );
 		$postdate = $post_date->format( 'd.m.Y' );
 
-		// Сначала обрабатываем контент и заменяем все картинки на полноразмерные
 		$processed_content = preg_replace_callback( '/<img(.*?)src=["\'](.*?)["\'](.*?)>/i', function ($matches) {
 			$img_url = $matches[2];
 			$full_img_url = preg_replace( '~-(?:\d+x\d+|scaled|rotated)~', '', $img_url );
 			return '<a href="' . $full_img_url . '" target="_blank"><img' . $matches[1] . 'src="' . $full_img_url . '"' . $matches[3] . '></a>';
 		}, $post->post_content );
 
-		// Применяем фильтры к обработанному контенту
 		$full_postcontent = apply_filters( 'the_content', $processed_content );
 		$full_postcontent = wpautop( $full_postcontent );
 
-		// Проверяем есть ли тег MORE и получаем контент до него
 		if ( strpos( $processed_content, '<!--more-->' ) !== false ) {
 			$parts = explode( '<!--more-->', $processed_content );
 			$content_before_more = $parts[0];
@@ -261,15 +250,14 @@ function devlog_load_more_posts() {
 			$postcontent = apply_filters( 'the_content', $postcontent );
 		}
 
-		// Выводим посты
 		$output .= sprintf(
 			'<a href="/?TB_inline&width=772&height=850&inlineId=%1$s" title="%2$s - %3$s" class="devlog-post thickbox">
-                <div class="devlog-post-header">
-                    <h2>%2$s</h2>
-                    <span class="devlog-post-date">%3$s</span>
-                </div>
-                <div class="devlog-post-content">%6$s</div>
-            </a>',
+				<div class="devlog-post-header">
+					<h2>%2$s</h2>
+					<span class="devlog-post-date">%3$s</span>
+				</div>
+				<div class="devlog-post-content">%6$s</div>
+			</a>',
 			$post->ID,
 			esc_html( $post->post_title ),
 			esc_html( $postdate ),
@@ -278,22 +266,15 @@ function devlog_load_more_posts() {
 			$postcontent
 		);
 
-		// Полный контент поста для модального окна
 		$full_posts .= "<div class='devlog-full-post' id='{$post->ID}' style='display:none;'>";
 		$full_posts .= "<div class='devlog-full-post devlog-post-content'>{$full_postcontent}</div>
-        </div>";
+		</div>";
 	}
 
 	$response = array(
 		'posts' => $output,
 		'full_posts' => $full_posts,
-		'has_more' => ( $offset + count( $posts ) < $query->found_posts ), // Есть ли ещё посты для загрузки
-		'debug' => array(
-			'post_count' => count( $posts ),
-			'offset' => $offset,
-			'query_vars' => $query->query_vars,
-			'found_posts' => $query->found_posts
-		)
+		'has_more' => ( $offset + count( $posts ) < $query->found_posts )
 	);
 
 	wp_send_json( $response );

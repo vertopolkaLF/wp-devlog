@@ -10,8 +10,6 @@ jQuery(document).ready(function ($) {
         // Вызываем thickbox
         tb_show($(this).attr('title'), $(this).attr('href'));
 
-        console.log('Clicked on dynamically added thickbox link:', modalId);
-
         return false;
     });
 
@@ -35,9 +33,6 @@ jQuery(document).ready(function ($) {
                 nonce: devlog_ajax.nonce
             },
             success: function (response) {
-                // Отладочная информация
-                console.log('AJAX response:', response);
-
                 // Добавляем новые посты в контейнер
                 $('#devlog-more-posts-container').append(response.posts);
 
@@ -45,9 +40,9 @@ jQuery(document).ready(function ($) {
                 $('body').append(response.full_posts);
 
                 // Обновляем offset для следующего запроса
-                var newOffset = offset + response.debug.post_count;
+                var postsCount = $(response.posts).filter('a.devlog-post').length;
+                var newOffset = offset + postsCount;
                 button.data('offset', newOffset);
-                console.log('New offset:', newOffset);
 
                 // Если больше нет постов, скрываем кнопку
                 if (!response.has_more) {
