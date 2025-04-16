@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name:		WP DevLog
- * Version:			1.5.1
+ * Version:			1.6.0
  * Description:		Плагин для коммуникации между разработчиком и редакторами
  * Plugin URI:		https://t.me/vertopolkalf
  * Author:			vertopolkaLF
@@ -41,21 +41,24 @@ function devlog_settings_page_callback() {
 	?>
 	<div class="wrap">
 		<h1>Настройки Dev Log</h1>
-		<form method="post" action="">
-			<?php wp_nonce_field( 'devlog_settings_nonce' ); ?>
-			<table class="form-table">
-				<tr>
-					<th scope="row">Количество записей на странице</th>
-					<td>
-						<input type="number" name="devlog_posts_per_page" value="<?php echo esc_attr( $posts_per_page ); ?>" min="1" class="regular-text">
-						<p class="description">Количество записей Dev Log, отображаемых в виджете на панели управления</p>
-					</td>
-				</tr>
-			</table>
-			<p class="submit">
-				<input type="submit" name="devlog_save_settings" class="button-primary" value="Сохранить настройки">
-			</p>
-		</form>
+		<div class="devlog-settings-page">
+			<h2>Параметры отображения</h2>
+			<form method="post" action="" class="devlog-settings-form">
+				<?php wp_nonce_field( 'devlog_settings_nonce' ); ?>
+				<table class="form-table">
+					<tr>
+						<th scope="row">Количество записей на странице</th>
+						<td>
+							<input type="number" name="devlog_posts_per_page" value="<?php echo esc_attr( $posts_per_page ); ?>" min="1" class="regular-text">
+							<p class="description">Количество записей Dev Log, отображаемых в виджете на панели управления</p>
+						</td>
+					</tr>
+				</table>
+				<p class="submit">
+					<input type="submit" name="devlog_save_settings" class="button-primary" value="Сохранить настройки">
+				</p>
+			</form>
+		</div>
 	</div>
 	<?php
 }
@@ -235,21 +238,26 @@ function devlog_dashboard_widget_callback() {
 
 
 function my_enqueue( $hook ) {
-	if ( 'index.php' != $hook )
-		return;
+	// Для виджета на дашборде
+	if ( 'index.php' == $hook ) {
+		// Убедимся, что Thickbox подключен
+		wp_enqueue_script( 'thickbox' );
+		wp_enqueue_style( 'thickbox' );
 
-	// Убедимся, что Thickbox подключен
-	wp_enqueue_script( 'thickbox' );
-	wp_enqueue_style( 'thickbox' );
+		wp_enqueue_style( 'devlog', plugins_url( '/devlog-style.css', __FILE__ ) );
+		wp_enqueue_script( 'devlog-script', plugins_url( '/devlog-script.js', __FILE__ ), array( 'jquery', 'thickbox' ), '1.0', true );
 
-	wp_enqueue_style( 'devlog', plugins_url( '/devlog-style.css', __FILE__ ) );
-	wp_enqueue_script( 'devlog-script', plugins_url( '/devlog-script.js', __FILE__ ), array( 'jquery', 'thickbox' ), '1.0', true );
+		// Передаем данные в JavaScript
+		wp_localize_script( 'devlog-script', 'devlog_ajax', array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce' => wp_create_nonce( 'devlog-ajax-nonce' )
+		) );
+	}
 
-	// Передаем данные в JavaScript
-	wp_localize_script( 'devlog-script', 'devlog_ajax', array(
-		'ajax_url' => admin_url( 'admin-ajax.php' ),
-		'nonce' => wp_create_nonce( 'devlog-ajax-nonce' )
-	) );
+	// Для страницы настроек
+	if ( strpos( $hook, 'page_devlog-settings' ) !== false ) {
+		wp_enqueue_style( 'devlog', plugins_url( '/devlog-style.css', __FILE__ ) );
+	}
 }
 add_action( 'admin_enqueue_scripts', 'my_enqueue' );
 
